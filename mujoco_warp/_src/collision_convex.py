@@ -71,7 +71,7 @@ def _hfield_filter(
   mesh_graphadr: wp.array[int],
   mesh_vert: wp.array[wp.vec3],
   mesh_graph: wp.array[int],
-  hfield_size: wp.array[wp.vec4],
+  hfield_size: wp.array2d[wp.vec4],
   # Data in:
   geom_xpos_in: wp.array2d[wp.vec3],
   geom_xmat_in: wp.array2d[wp.mat33],
@@ -87,7 +87,7 @@ def _hfield_filter(
   # height field info
   dataid_setid = worldid % geom_dataid.shape[0]
   hfdataid = geom_dataid[dataid_setid, g1]
-  size1 = hfield_size[hfdataid]
+  size1 = hfield_size[worldid % hfield_size.shape[0], hfdataid]
 
   # geom info
   rbound_id = worldid % geom_rbound.shape[0]
@@ -203,7 +203,7 @@ def ccd_hfield_kernel_builder(
     mesh_polymapadr: wp.array[int],
     mesh_polymapnum: wp.array[int],
     mesh_polymap: wp.array[int],
-    hfield_size: wp.array[wp.vec4],
+    hfield_size: wp.array2d[wp.vec4],
     hfield_nrow: wp.array[int],
     hfield_ncol: wp.array[int],
     hfield_adr: wp.array[int],
@@ -365,7 +365,7 @@ def ccd_hfield_kernel_builder(
     # height field subgrid
     nrow = hfield_nrow[geom1_dataid]
     ncol = hfield_ncol[geom1_dataid]
-    size = hfield_size[geom1_dataid]
+    size = hfield_size[worldid % hfield_size.shape[0], geom1_dataid]
 
     # subgrid
     x_scale = 0.5 * float(ncol - 1) / size[0]

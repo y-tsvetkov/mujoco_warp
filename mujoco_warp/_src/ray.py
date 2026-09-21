@@ -479,7 +479,7 @@ def ray_box(pos: wp.vec3, mat: wp.mat33, size: wp.vec3, pnt: wp.vec3, vec: wp.ve
 def ray_hfield(
   # Model:
   geom_dataid: wp.array2d[int],
-  hfield_size: wp.array[wp.vec4],
+  hfield_size: wp.array2d[wp.vec4],
   hfield_nrow: wp.array[int],
   hfield_ncol: wp.array[int],
   hfield_adr: wp.array[int],
@@ -497,7 +497,7 @@ def ray_hfield(
   nrow = hfield_nrow[hid]
   ncol = hfield_ncol[hid]
 
-  size = hfield_size[hid]
+  size = hfield_size[worldid % hfield_size.shape[0], hid]
   adr = hfield_adr[hid]
 
   mat_col = wp.vec3(mat[0, 2], mat[1, 2], mat[2, 2])
@@ -852,7 +852,7 @@ def _ray_geom_mesh(
   mesh_faceadr: wp.array[int],
   mesh_vert: wp.array[wp.vec3],
   mesh_face: wp.array[wp.vec3i],
-  hfield_size: wp.array[wp.vec4],
+  hfield_size: wp.array2d[wp.vec4],
   hfield_nrow: wp.array[int],
   hfield_ncol: wp.array[int],
   hfield_adr: wp.array[int],
@@ -938,7 +938,7 @@ def _ray(
   mesh_faceadr: wp.array[int],
   mesh_vert: wp.array[wp.vec3],
   mesh_face: wp.array[wp.vec3i],
-  hfield_size: wp.array[wp.vec4],
+  hfield_size: wp.array2d[wp.vec4],
   hfield_nrow: wp.array[int],
   hfield_ncol: wp.array[int],
   hfield_adr: wp.array[int],
