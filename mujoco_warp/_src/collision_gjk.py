@@ -993,7 +993,9 @@ def _epa_witness(
   i1 = pt.vert_index[2 * face[0]]
   i2 = pt.vert_index[2 * face[1]]
   i3 = pt.vert_index[2 * face[2]]
-  if geomtype1 == GeomType.HFIELD and (i1 != i2 or i1 != i3):
+  if (
+    geomtype1 == GeomType.HFIELD and (i1 != i2 or i1 != i3) and (geomtype2 == GeomType.CAPSULE or geomtype2 == GeomType.SPHERE)
+  ):
     # TODO(kbayes): Fix case where geom2 is near bottom of height field or "extreme" prism heights
     n = wp.vec3(0.0, 0.0, 1.0)
 
@@ -1003,19 +1005,14 @@ def _epa_witness(
     c = geom1.polyvert[5]
 
     # TODO(kbayes): Support cases where geom2 is larger than the height field
-    if geomtype2 == GeomType.CAPSULE or geomtype2 == GeomType.SPHERE:
-      radius = geom2.size[0]
-      margin = geom2.margin
-      geom2.margin = 0.0
-      geom2.size = wp.vec3(0.0, geom2.size[1], geom2.size[2])
-      sp = support(geom2, geomtype2, x2)
-      x2 = sp.point - (0.5 * margin + radius) * n
-      geom2.size[0] = radius
-      geom2.margin = margin
-    else:
-      x2 = wp.normalize(x2)
-      sp = support(geom2, geomtype2, x2)
-      x2 = sp.point
+    radius = geom2.size[0]
+    margin = geom2.margin
+    geom2.margin = 0.0
+    geom2.size = wp.vec3(0.0, geom2.size[1], geom2.size[2])
+    sp = support(geom2, geomtype2, x2)
+    x2 = sp.point - (0.5 * margin + radius) * n
+    geom2.size[0] = radius
+    geom2.margin = margin
 
     coordinates2 = _tri_affine_coord(a, b, c, x2)
     if coordinates2[0] > 0.0 and coordinates2[1] > 0.0 and coordinates2[2] > 0.0:
